@@ -1,3 +1,4 @@
+// Node class for a doubly linked list
 class Node {
     constructor(data) {
         this.data = data;
@@ -6,119 +7,93 @@ class Node {
     }
 }
 
-class DLL {
+// Doubly Linked List class
+class DoublyLinkedList {
     constructor() {
         this.head = null;
         this.tail = null;
-        this.size = 0;
     }
 
-    isEmpty() {
+    // Insert a node at the beginning
+    insertAtBeginning(data) {
+        const newNode = new Node(data);
         if (this.head === null) {
-            return true;
-        }
-        return false;
-    }
-
-    addAtEnd(data) {
-        const node = new Node(data);
-        if (this.isEmpty()) {
-            this.head = node;
-            this.tail = node;
-        }
-        else {
-            node.prev = this.tail;
-            this.tail.next = node;
-            this.tail = node;
-        }
-        this.size++;
-    }
-
-    display() {
-        let curr = this.head;
-        let res = "";
-        while (curr) {
-            if(curr.next){
-                res += curr.data + " <-> ";
-            }
-            else{
-                res += curr.data;
-            }
-            curr = curr.next;
-        }
-        console.log(res);
-    }
-
-    addAtFirst(data) {
-        const node = new Node(data);
-        if (this.isEmpty()) {
-            this.head = node;
-            this.tail = node;
-        }
-        else {
-            node.next = this.head;
-            this.head.prev = node;
-            this.head = node;
-        }
-        this.size++;
-    }
-
-    addAtIndex(data, index) {
-        if (index < 0 || index > this.size - 1) {
-            console.log("Invalid Index");
-        }
-        else if (index === 0) {
-            const node = new Node(data);
-            node.next = this.head;
-            this.head.prev = node;
-            this.head = node;
-            this.size++;
-        }
-        else {
-            const node = new Node(data);
-            let curr = this.head;
-            let i = 0;
-            while (i < index) {
-                i++;
-                if (i === index) {
-                    continue;
-                }
-                else {
-                    curr = curr.next;
-                }
-            }
-            node.next = curr.next;
-            curr.next.prev = node;
-            node.prev = curr;
-            curr.next = node;
-            this.size++;
+            this.head = this.tail = newNode; // List is empty
+        } else {
+            newNode.next = this.head;
+            this.head.prev = newNode;
+            this.head = newNode;
         }
     }
 
-    displayRev() {
-        if (!this.isEmpty()) {
-            let curr = this.tail;
-            let res = "";
-            while (curr !== null) {
-                if(curr.prev){
-                    res += curr.data + " <-> ";
-                }
-                else{
-                    res += curr.data;
-                }
-                curr = curr.prev;
-            }
-            console.log(res);
+    // Insert a node at the end
+    insertAtEnd(data) {
+        const newNode = new Node(data);
+        if (this.tail === null) {
+            this.head = this.tail = newNode; // List is empty
+        } else {
+            this.tail.next = newNode;
+            newNode.prev = this.tail;
+            this.tail = newNode;
         }
+    }
+
+    // Insert a node after a specific node
+    insertAfter(nodeData, data) {
+        let current = this.head;
+        while (current !== null && current.data !== nodeData) {
+            current = current.next;
+        }
+
+        if (current === null) {
+            console.log("Node not found!");
+            return;
+        }
+
+        const newNode = new Node(data);
+        newNode.next = current.next;
+        newNode.prev = current;
+
+        if (current.next !== null) {
+            current.next.prev = newNode;
+        } else {
+            this.tail = newNode; // Update tail if inserted at the end
+        }
+
+        current.next = newNode;
+    }
+
+    // Print the list from head to tail
+    printForward() {
+        let current = this.head;
+        let result = [];
+        while (current !== null) {
+            result.push(current.data);
+            current = current.next;
+        }
+        console.log("Forward:", result.join(" <-> "));
+    }
+
+    // Print the list from tail to head
+    printBackward() {
+        let current = this.tail;
+        let result = [];
+        while (current !== null) {
+            result.push(current.data);
+            current = current.prev;
+        }
+        console.log("Backward:", result.join(" <-> "));
     }
 }
 
-let dll = new DLL();
-dll.addAtEnd(23);
-dll.addAtEnd(45);
-dll.addAtFirst(51);
-dll.addAtFirst(76);
-dll.display();
-dll.addAtIndex(11, 3);
-dll.display();
-dll.displayRev();
+// Usage example
+const dll = new DoublyLinkedList();
+dll.insertAtBeginning(10);
+dll.insertAtEnd(20);
+dll.insertAtEnd(30);
+dll.insertAfter(20, 25);
+dll.printForward(); // Output: Forward: 10 <-> 20 <-> 25 <-> 30
+// dll.printBackward(); // Output: Backward: 30 <-> 25 <-> 20 <-> 10
+
+
+
